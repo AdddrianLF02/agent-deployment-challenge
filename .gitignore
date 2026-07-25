@@ -17,6 +17,6 @@ coverage/
 *.crt
 .cache/
 .tmp/
+docs/superpowers
 .gemini
 .specify
-docs/superpowers

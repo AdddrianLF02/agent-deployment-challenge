@@ -116,3 +116,31 @@ Before declaring any feature complete, the following empirical verifications MUS
 3. **Container Orchestration Gate**: `docker-compose up --build` successfully launches API, Web, and Postgres with `pgvector`.
 4. **Security & Auth Gate**: Unauthenticated requests to `/api/chat` return HTTP 401 Unauthorized.
 5. **Cross-Session RAG Memory Gate**: Sending a prompt in Session A enriches the response of a separate Session B using retrieved vector context.
+
+---
+
+## 7. Testing (General Rules)
+
+1. **Framework & Runtime**: `node:test` (built-in Node.js 22+). No external testing dependencies.
+2. **Location**: `apps/api/test/` with subdirectories mirroring `src/` (e.g., `test/middlewares/`, `test/controllers/`, `test/services/`).
+3. **Script**: `npm test` runs `node --test` automatically discovering `*.test.mjs` files.
+4. **AAA Pattern**: Every test must strictly follow the Arrange, Act, Assert structure. Use `// Arrange`, `// Act`, `// Assert` comments to visually separate each block.
+5. **Object Mother Pattern**: Do not instantiate complex test objects directly in the test. Use the Object Mother pattern (e.g., `ConfigMother.withModel()`, `ExpressMother.createMockRes()`) importing it from `test/factories/`.
+6. **Isolation**: Unit tests must not depend on the network, database, or filesystem. Use injected mocks/stubs via parameters.
+
+---
+
+## 8. Git & GitHub Flow
+
+1. **Atomic Commits**: One commit per delegated atomic task.
+2. **Commit Format**: Conventional Commits is mandatory:
+   - `feat(scope):` New functionality.
+   - `fix(scope):` Bug fix.
+   - `test(scope):` New or modified tests.
+   - `refactor(scope):` Structural change without behavior change.
+   - `chore(scope):` Maintenance tasks (deps, config, CI).
+   - `docs(scope):` Documentation.
+3. **Pull Requests**: Every PR must include:
+   - Description in Delta format of the Spec (ADDED, MODIFIED, REMOVED).
+   - Confirmation that `npm run check` and `npm test` pass successfully.
+
