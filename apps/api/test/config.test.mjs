@@ -40,3 +40,27 @@ test("loads auth configuration with defaults", () => {
   assert.equal(config.auth.jwtSecret, "default_jwt_secret_for_local_development_only");
   assert.equal(config.auth.tokenMaxAgeSeconds, 86400);
 });
+
+test("loads postgres configuration with defaults", () => {
+  const config = loadConfig({});
+  assert.equal(config.postgres.host, "localhost");
+  assert.equal(config.postgres.port, 5432);
+  assert.equal(config.postgres.database, "agent_platform");
+  assert.equal(config.postgres.user, "postgres");
+  assert.equal(config.postgres.password, "postgres");
+});
+
+test("loads postgres configuration from env", () => {
+  const config = loadConfig({
+    PGHOST: "db.example.com",
+    PGPORT: "5433",
+    PGDATABASE: "test_db",
+    PGUSER: "test_user",
+    PGPASSWORD: "test_password",
+  });
+  assert.equal(config.postgres.host, "db.example.com");
+  assert.equal(config.postgres.port, 5433);
+  assert.equal(config.postgres.database, "test_db");
+  assert.equal(config.postgres.user, "test_user");
+  assert.equal(config.postgres.password, "test_password");
+});

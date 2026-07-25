@@ -10,3 +10,4 @@ Este directorio contiene los Registros de Decisiones de Arquitectura (ADRs) para
 | [ADR-0004](file:///C:/proyectos/agent-deployment-challenge/docs/adr/0004-llm-orchestration-with-structured-tool-calling.md) | Orquestación LLM con Tool Calling y Defensa Anti-Prompt Injection | Aceptado | 2026-07-24 |
 | [ADR-0005](file:///C:/proyectos/agent-deployment-challenge/docs/adr/0005-llm-model-selection-and-provider-strategy.md) | Selección de Modelo LLM y Estrategia de Proveedor | Aceptado | 2026-07-24 |
 | [ADR-0006](file:///C:/proyectos/agent-deployment-challenge/docs/adr/0006-docker-compose-deployment.md) | Orquestación de Contenedores con Docker y Docker Compose | Aceptado | 2026-07-24 |
+| [ADR-0007](file:///C:/proyectos/agent-deployment-challenge/docs/adr/0007-relational-data-modeling-and-persistence.md) | Modelaje de Datos Relacional y Gestor de Persistencia | Aceptado | 2026-07-26 |

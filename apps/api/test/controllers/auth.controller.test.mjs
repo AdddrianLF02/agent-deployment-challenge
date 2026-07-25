@@ -8,22 +8,22 @@ const mockConfig = {
   auth: { adminUsername: "admin", adminPassword: "password", jwtSecret: "secret", tokenMaxAgeSeconds: 3600 }
 };
 
-test("handleLogin success sets cookie and returns 200", () => {
+test("handleLogin success sets cookie and returns 200", async () => {
   const req = ExpressMother.createMockReq({ body: { username: "admin", password: "password" } });
   const res = ExpressMother.createMockRes();
   
-  handleLogin(mockConfig)(req, res);
+  await handleLogin(mockConfig)(req, res);
 
   assert.equal(res.setHeader.mock.calls[0].arguments[0], "Set-Cookie");
   assert.ok(res.setHeader.mock.calls[0].arguments[1].includes("auth_token="));
   assert.equal(res.status.mock.calls[0].arguments[0], 200);
 });
 
-test("handleLogin failure returns 401", () => {
+test("handleLogin failure returns 401", async () => {
   const req = ExpressMother.createMockReq({ body: { username: "admin", password: "wrong" } });
   const res = ExpressMother.createMockRes();
   
-  handleLogin(mockConfig)(req, res);
+  await handleLogin(mockConfig)(req, res);
 
   assert.equal(res.status.mock.calls[0].arguments[0], 401);
   assert.equal(res.setHeader.mock.calls.length, 0);
