@@ -27,6 +27,7 @@ export class ExpressMother {
     res.send = mock.fn(() => res);
     res.end = mock.fn(() => res);
     res.set = mock.fn(() => res);
+    res.setHeader = mock.fn(() => res);
     return res;
   }
 
