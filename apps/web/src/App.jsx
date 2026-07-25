@@ -1,15 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import { LoginForm } from "./components/auth/LoginForm.jsx";
+import { ModelStatus } from "./components/chat/ModelStatus.jsx";
+import { EmptyState } from "./components/chat/EmptyState.jsx";
+import { Message } from "./components/chat/Message.jsx";
+import { Composer } from "./components/chat/Composer.jsx";
 
 const EMPTY_HEALTH = { state: "checking", modelName: null };
 const STORAGE_KEY = "agent-challenge:conversation:v1";
-const STATUS_LABELS = {
-  checking: "Comprobando",
-  offline: "Sin conexión",
-  ready: "Modelo conectado",
-  unconfigured: "Modelo pendiente",
-};
-
 function loadStoredMessages() {
   try {
     const value = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
@@ -39,49 +36,6 @@ async function readJson(response) {
     throw new Error(payload.error || "No se pudo completar la solicitud");
   }
   return payload;
-}
-
-function ModelStatus({ health }) {
-  return (
-    <div className={`status status--${health.state}`} role="status">
-      <span className="status__dot" aria-hidden="true" />
-      <span>{STATUS_LABELS[health.state]}</span>
-      {health.modelName ? <strong>{health.modelName}</strong> : null}
-    </div>
-  );
-}
-
-function EmptyState() {
-  return (
-    <section className="empty-state">
-      <span className="empty-state__index">01 / READY</span>
-      <h2>El canal está abierto.</h2>
-      <p>
-        Escribe un mensaje para comprobar la conexión entre esta interfaz y el
-        modelo configurado.
-      </p>
-      <div className="signal" aria-hidden="true">
-        <span />
-        <span />
-        <span />
-        <span />
-      </div>
-    </section>
-  );
-}
-
-function Message({ message, index }) {
-  const actor = message.role === "user" ? "Tú" : "Agente";
-
-  return (
-    <article className={`message message--${message.role}`}>
-      <header>
-        <span>{String(index + 1).padStart(2, "0")}</span>
-        <strong>{actor}</strong>
-      </header>
-      <p>{message.content}</p>
-    </article>
-  );
 }
 
 function submitOnEnter(event) {
@@ -248,29 +202,10 @@ export default function App() {
             <div ref={endRef} />
           </div>
 
-          <form className="composer" onSubmit={sendMessage}>
-            {error ? <p className="composer__error">{error}</p> : null}
-            <label htmlFor="message">Mensaje</label>
-            <div className="composer__row">
-              <textarea
-                id="message"
-                value={draft}
-                onChange={(event) => setDraft(event.target.value)}
-                onKeyDown={submitOnEnter}
-                placeholder="Escribe para probar el agente…"
-                rows="2"
-                maxLength="8000"
-                disabled={sending}
-              />
-              <button type="submit" disabled={sending || !draft.trim()}>
-                <span>Enviar</span>
-                <span aria-hidden="true">↗</span>
-              </button>
-            </div>
-            <small>Enter para enviar · Shift + Enter para una nueva línea</small>
-          </form>
+          <Composer draft={draft} setDraft={setDraft} sending={sending} submitOnEnter={submitOnEnter} sendMessage={sendMessage} error={error} />
         </section>
       </div>
     </main>
   );
 }
+
