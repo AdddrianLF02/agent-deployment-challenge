@@ -32,3 +32,11 @@ test("rejects invalid numeric and URL values", () => {
     /MODEL_API_BASE_URL/,
   );
 });
+
+test("loads auth configuration with defaults", () => {
+  const config = loadConfig({});
+  assert.equal(config.auth.adminUsername, "admin");
+  assert.equal(config.auth.adminPassword, "admin");
+  assert.equal(config.auth.jwtSecret, "default_jwt_secret_for_local_development_only");
+  assert.equal(config.auth.tokenMaxAgeSeconds, 86400);
+});

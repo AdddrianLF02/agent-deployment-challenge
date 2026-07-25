@@ -27,6 +27,16 @@ export function loadConfig(env = process.env) {
   return {
     host: env.HOST?.trim() || "0.0.0.0",
     port: parsePositiveInteger(env.PORT, DEFAULT_PORT, "PORT"),
+    auth: {
+      adminUsername: env.ADMIN_USERNAME?.trim() || "admin",
+      adminPassword: env.ADMIN_PASSWORD?.trim() || "admin",
+      jwtSecret: env.JWT_SECRET?.trim() || "default_jwt_secret_for_local_development_only",
+      tokenMaxAgeSeconds: parsePositiveInteger(
+        env.JWT_TOKEN_MAX_AGE_SECONDS,
+        86400,
+        "JWT_TOKEN_MAX_AGE_SECONDS"
+      ),
+    },
     model: {
       apiKey: env.MODEL_API_KEY?.trim() ?? "",
       baseUrl: modelBaseUrl.replace(/\/$/, ""),
