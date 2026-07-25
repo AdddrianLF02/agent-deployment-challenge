@@ -1,8 +1,28 @@
 import jwt from "jsonwebtoken";
 import cookie from "cookie";
+import crypto from "node:crypto";
+import { findByUsername, createUser } from "../repositories/user.repository.mjs";
 
-export function validateCredentials(username, password, config) {
-  return username === config.auth.adminUsername && password === config.auth.adminPassword;
+function hashPassword(password) {
+  return crypto.createHash('sha256').update(password).digest('hex');
+}
+
+export async function validateCredentials(username, password, config) {
+  const user = await findByUsername(username);
+
+  if (user) {
+    return user.password_hash === hashPassword(password);
+  }
+
+  if (username === config.auth.adminUsername && password === config.auth.adminPassword) {
+    await createUser({
+      username,
+      passwordHash: hashPassword(password)
+    });
+    return true;
+  }
+
+  return false;
 }
 
 export function signToken(payload, config) {

@@ -2,10 +2,11 @@ import { validateCredentials, signToken } from "../services/auth.service.mjs";
 import cookie from "cookie";
 
 export function handleLogin(config) {
-  return function (req, res) {
+  return async function (req, res) {
     const { username, password } = req.body || {};
     
-    if (!validateCredentials(username, password, config)) {
+    const isValid = await validateCredentials(username, password, config);
+    if (!isValid) {
       return res.status(401).json({ error: "Invalid credentials" });
     }
 
