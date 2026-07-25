@@ -7,6 +7,7 @@ import { securityMiddleware } from "./middlewares/security.middleware.mjs";
 import { registerStaticMiddleware } from "./middlewares/static.middleware.mjs";
 import { errorHandlerMiddleware, notFoundHandlerMiddleware } from "./middlewares/error.middleware.mjs";
 import { createApiRouter } from "./routes/index.mjs";
+import { runMigrations } from "./repositories/migrations.mjs";
 
 export function createApp(config = loadConfig()) {
   const app = express();
@@ -27,7 +28,12 @@ export function createApp(config = loadConfig()) {
   return app;
 }
 
-export function startServer(config = loadConfig()) {
+export async function startServer(config = loadConfig()) {
+  try {
+    await runMigrations(config);
+  } catch (error) {
+    console.error("Failed to run database migrations during startup:", error);
+  }
   const app = createApp(config);
   return app.listen(config.port, config.host, () => {
     console.log(`Agent challenge listening on http://${config.host}:${config.port}`);
@@ -38,4 +44,4 @@ const isEntryPoint = process.argv[1]
   ? path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)
   : false;
 
-if (isEntryPoint) startServer();
+if (isEntryPoint) await startServer();
