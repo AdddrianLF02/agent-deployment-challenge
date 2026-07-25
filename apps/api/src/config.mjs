@@ -50,6 +50,13 @@ export function loadConfig(env = process.env) {
         "MODEL_REQUEST_TIMEOUT_MS",
       ),
     },
+    postgres: {
+      host: env.PGHOST?.trim() || "localhost",
+      port: parsePositiveInteger(env.PGPORT, 5432, "PGPORT"),
+      database: env.PGDATABASE?.trim() || "agent_platform",
+      user: env.PGUSER?.trim() || "postgres",
+      password: env.PGPASSWORD?.trim() || "postgres",
+    },
     modelConfigured: Boolean(modelBaseUrl && modelName),
   };
 }
