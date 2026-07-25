@@ -517,6 +517,106 @@ textarea:focus-visible {
   }
 }
 
+/* Auth Components (Brutalist Aesthetic) */
+.auth-container {
+  display: grid;
+  place-items: center;
+  min-height: 100vh;
+  padding: 1rem;
+  background: var(--ink);
+  color: var(--signal);
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 440px;
+  background: var(--ink);
+  border: 1px solid rgba(238, 234, 224, 0.25);
+  padding: clamp(28px, 4vw, 48px);
+}
+
+.auth-title {
+  margin: 0 0 8px;
+  font-family: Georgia, serif;
+  font-size: clamp(32px, 4vw, 42px);
+  font-weight: 400;
+  line-height: 0.98;
+  letter-spacing: -0.055em;
+  color: var(--paper);
+}
+
+.auth-subtitle {
+  margin: 0 0 32px;
+  color: #b8b9b1;
+  font-size: 14px;
+  line-height: 1.65;
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.auth-error {
+  margin: 0 0 10px;
+  padding: 9px 12px;
+  border-left: 4px solid var(--alert);
+  background: rgba(240, 91, 56, 0.1);
+  color: var(--paper);
+  font-size: 13px;
+}
+
+/* Shared Components (Brutalist Aesthetic) */
+.input-base {
+  width: 100%;
+  padding: 14px 16px;
+  background: var(--paper);
+  border: 1px solid var(--ink);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-size: 14px;
+  outline: none;
+  transition: box-shadow 150ms ease;
+  border-radius: 0;
+}
+
+.input-base:focus {
+  box-shadow: 0 0 0 2px var(--signal);
+}
+
+.auth-label {
+  display: block;
+  margin-bottom: 8px;
+  font-family: "Cascadia Code", "Courier New", monospace;
+  font-size: 11px;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+  color: #8d8f87;
+}
+
+.btn-primary {
+  min-height: 48px;
+  padding: 0 18px;
+  margin-top: 8px;
+  background: var(--signal);
+  color: var(--ink);
+  border: 1px solid var(--signal);
+  font-family: "Cascadia Code", "Courier New", monospace;
+  font-size: 11px;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: transform 150ms ease, background 150ms ease;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: var(--paper);
+  color: var(--ink);
+  border-color: var(--paper);
+  transform: translateY(-2px);
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

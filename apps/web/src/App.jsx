@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { LoginForm } from "./components/auth/LoginForm.jsx";
 
 const EMPTY_HEALTH = { state: "checking", modelName: null };
 const STORAGE_KEY = "agent-challenge:conversation:v1";
@@ -91,6 +92,7 @@ function submitOnEnter(event) {
 }
 
 export default function App() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [health, setHealth] = useState(EMPTY_HEALTH);
   const [messages, setMessages] = useState(loadStoredMessages);
   const [draft, setDraft] = useState("");
@@ -166,6 +168,20 @@ export default function App() {
       sendingRef.current = false;
       setSending(false);
     }
+  }
+
+  async function handleLogin({ username, password }) {
+    const response = await fetch("/api/auth/login", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ username, password })
+    });
+    if (!response.ok) throw new Error("Invalid credentials");
+    setIsAuthenticated(true);
+  }
+
+  if (!isAuthenticated) {
+    return <LoginForm onLogin={handleLogin} />;
   }
 
   return (
