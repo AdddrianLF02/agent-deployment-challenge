@@ -27,7 +27,8 @@ test("connects the public chat route to the configured model endpoint", async ()
   });
   const modelAddress = await listen(modelServer);
 
-  const app = createApp({
+  const config = {
+    auth: { adminUsername: "admin", adminPassword: "password", jwtSecret: "secret", tokenMaxAgeSeconds: 3600 },
     modelConfigured: true,
     model: {
       apiKey: "",
@@ -36,14 +37,18 @@ test("connects the public chat route to the configured model endpoint", async ()
       systemPrompt: "Be useful",
       timeoutMs: 1_000,
     },
-  });
+  };
+  const app = createApp(config);
   const appServer = http.createServer(app);
   const appAddress = await listen(appServer);
 
   try {
+    const { signToken } = await import("../src/services/auth.service.mjs");
+    const token = signToken({ sub: "admin" }, config);
+
     const response = await fetch(`http://127.0.0.1:${appAddress.port}/api/chat`, {
       method: "POST",
-      headers: { "content-type": "application/json" },
+      headers: { "content-type": "application/json", "cookie": `auth_token=${token}` },
       body: JSON.stringify({ messages: [{ role: "user", content: "Hello" }] }),
     });
     const payload = await response.json();
