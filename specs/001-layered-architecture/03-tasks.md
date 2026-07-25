@@ -14,9 +14,9 @@
 
 #### Tarea 1.2: Middleware de Seguridad (`security.middleware.mjs`)
 - **Rol**: Security & Middleware Developer.
-- **Tarea**: Crear `apps/api/src/middlewares/security.middleware.mjs` exportando una función middleware que desactive la cabecera `x-powered-by` mediante `app.disable("x-powered-by")` (o middleware equivalente) e inyecte las cabeceras `referrer-policy: no-referrer`, `x-content-type-options: nosniff` y `x-frame-options: DENY`.
+- **Tarea**: Crear `apps/api/src/middlewares/security.middleware.mjs` exportando una función middleware que inyecte las cabeceras `referrer-policy: no-referrer`, `x-content-type-options: nosniff` y `x-frame-options: DENY`.
 - **Restricciones**: Utilizar exclusivamente sintaxis de Node.js 22 ES Modules (`.mjs`). No agregar dependencias de terceros.
-- **Éxito**: Ejecutar `node --check apps/api/src/middlewares/security.middleware.mjs` demostrando ausencia de errores de sintaxis o importación.
+- **Éxito**: Ejecutar `node --check apps/api/src/middlewares/security.middleware.mjs` e incluir la creación de tests unitarios en `apps/api/test/middlewares/security.middleware.test.mjs` comprobando que pase en verde.
 
 #### Tarea 1.3: Middleware de Estáticos y Fallback SPA (`static.middleware.mjs`)
 - **Rol**: Frontend Integration & Middleware Developer.
@@ -26,9 +26,9 @@
 
 #### Tarea 1.4: Middleware Global de Manejo de Errores (`error.middleware.mjs`)
 - **Rol**: Express Error Handling Specialist.
-- **Tarea**: Crear `apps/api/src/middlewares/error.middleware.mjs` exportando `errorHandlerMiddleware` (que procese errores 413 Payload Too Large y SyntaxError 400 Bad Request) y `notFoundHandlerMiddleware` (que responda HTTP 404 `{ error: "Not found" }`).
+- **Tarea**: Crear `apps/api/src/middlewares/error.middleware.mjs` exportando `errorHandlerMiddleware` (que procese errores 413 Payload Too Large, SyntaxError 400 Bad Request, y fallback catch-all HTTP 500 JSON) y `notFoundHandlerMiddleware` (que responda HTTP 404 `{ error: "Not found" }`).
 - **Restricciones ajustadas**: Preservar exactamente los mensajes de error JSON **extrayéndolos de la lógica original en `server.mjs`** y mantener las firmas de error Express `(error, req, res, next)`.
-- **Éxito**: Ejecutar `node --check apps/api/src/middlewares/error.middleware.mjs` sin errores de sintaxis.
+- **Éxito**: Ejecutar `node --check apps/api/src/middlewares/error.middleware.mjs` e incluir la creación de tests unitarios en `apps/api/test/middlewares/error.middleware.test.mjs` comprobando que pase en verde.
 
 ---
 
@@ -37,20 +37,20 @@
 #### Tarea 2.1: Servicio de Orquestación de Chat (`chat.service.mjs`)
 - **Rol**: Domain Logic Developer.
 - **Tarea**: Crear `apps/api/src/services/chat.service.mjs` exportando la función `processChatCompletion({ model, messages })` que ejecute `validateMessages(messages)` y llame a `requestCompletion({ model, messages: validation.messages })`.
-- **Restricciones**: Importar y usar estrictamente los módulos existentes `messages.mjs` y `model-client.mjs` sin alterar su código.
-- **Éxito**: Ejecutar `node --check apps/api/src/services/chat.service.mjs` confirmando que resuelve correctamente las importaciones de `../messages.mjs` y `../model-client.mjs`.
+- **Restricciones**: Importar y usar strictly los módulos existentes `messages.mjs` y `model-client.mjs` sin alterar su código.
+- **Éxito**: Ejecutar `node --check apps/api/src/services/chat.service.mjs` e incluir la creación de tests unitarios en `apps/api/test/services/chat.service.test.mjs` comprobando que pase en verde.
 
 #### Tarea 2.2: Controlador de Health (`health.controller.mjs`)
 - **Rol**: Express Controller Developer.
 - **Tarea**: Crear `apps/api/src/controllers/health.controller.mjs` exportando `getHealth(config)` que retorne HTTP 200 OK con la estructura `{ status: "ok", model: { configured: config.modelConfigured, name: config.modelConfigured ? config.model.name : null } }`.
 - **Restricciones**: No leer `process.env` directamente; usar el objeto `config` inyectado.
-- **Éxito**: Ejecutar `node --check apps/api/src/controllers/health.controller.mjs` sin errores.
+- **Éxito**: Ejecutar `node --check apps/api/src/controllers/health.controller.mjs` e incluir la creación de tests unitarios en `apps/api/test/controllers/health.controller.test.mjs` comprobando que pase en verde.
 
 #### Tarea 2.3: Controlador de Chat (`chat.controller.mjs`)
 - **Rol**: Express Controller Developer.
 - **Tarea**: Crear `apps/api/src/controllers/chat.controller.mjs` exportando `handleChat(config)` que genere `requestId` con `crypto.randomUUID()`, valide `config.modelConfigured` (devolviendo estrictamente HTTP 503 si es falso), delegue a `chat.service.mjs` y maneje excepciones de `ModelRequestError` o errores genéricos con logging contextual `[requestId]`.
 - **Restricciones**: Preservar los formatos exactos de respuesta de error `{ error, requestId }` y códigos HTTP (503, 400, 502, 504, 500) extrayéndolos de la lógica original en `server.mjs`.
-- **Éxito**: Ejecutar `node --check apps/api/src/controllers/chat.controller.mjs` sin errores de sintaxis.
+- **Éxito**: Ejecutar `node --check apps/api/src/controllers/chat.controller.mjs` e incluir la creación de tests unitarios en `apps/api/test/controllers/chat.controller.test.mjs` comprobando que pase en verde.
 
 ---
 
