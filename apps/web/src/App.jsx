@@ -9,7 +9,7 @@ import { useChat } from "./hooks/useChat.js";
 
 export default function App() {
   const { isAuthenticated, user, isAuthLoading, health, login, logout } = useAuth();
-  const { messages, draft, setDraft, sending, error, sendMessage, clearMessages } = useChat();
+  const { messages, draft, setDraft, sending, error, isLoadingHistory, sendMessage, clearMessages } = useChat(isAuthenticated);
   const listRef = useRef(null);
 
   useEffect(() => {
@@ -46,7 +46,7 @@ export default function App() {
           <span className="brand__mark" aria-hidden="true">A</span>
           <div>
             <p>Deployment challenge</p>
-            <h1>Agent Console {user?.sub ? `[${user.sub}]` : ""}</h1>
+            <h1>Agent Console {user?.username ? `[${user.username}]` : (user?.sub ? `[${user.sub}]` : "")}</h1>
           </div>
         </div>
         <div className="topbar__actions">
@@ -89,14 +89,16 @@ export default function App() {
             </div>
             <div>
               <dt>Usuario</dt>
-              <dd>{user?.sub || "Anon"}</dd>
+              <dd>{user?.username || user?.sub || "Anon"}</dd>
             </div>
           </dl>
         </aside>
 
         <section className="chat-panel" aria-label="Conversación con el agente">
           <div className="chat-log" aria-live="polite">
-            {messages.length === 0 ? (
+            {isLoadingHistory ? (
+              <div style={{ padding: '2rem', textAlign: 'center', color: 'var(--text-muted)' }}>Cargando historial...</div>
+            ) : messages.length === 0 ? (
               <EmptyState />
             ) : (
               <div className="chat-history__list" ref={listRef}>

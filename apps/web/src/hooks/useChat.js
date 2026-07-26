@@ -1,11 +1,45 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { fetchApi } from '../utils/api.js';
 
-export function useChat() {
+export function useChat(isAuthenticated) {
   const [messages, setMessages] = useState([]);
   const [draft, setDraft] = useState('');
   const [sending, setSending] = useState(false);
   const [error, setError] = useState(null);
+  const [isLoadingHistory, setIsLoadingHistory] = useState(false);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    if (isAuthenticated) {
+      const fetchHistory = async () => {
+        setIsLoadingHistory(true);
+        try {
+          const data = await fetchApi('/api/chat/history');
+          if (isMounted) {
+            setMessages(data.messages || []);
+          }
+        } catch (err) {
+          if (isMounted) {
+            console.error('Failed to load chat history:', err);
+            // Non-blocking error for history load
+          }
+        } finally {
+          if (isMounted) {
+            setIsLoadingHistory(false);
+          }
+        }
+      };
+      
+      fetchHistory();
+    } else {
+      setMessages([]);
+    }
+
+    return () => {
+      isMounted = false;
+    };
+  }, [isAuthenticated]);
 
   const sendMessage = async (event) => {
     if (event && typeof event.preventDefault === 'function') {
@@ -48,6 +82,7 @@ export function useChat() {
     setDraft,
     sending,
     error,
+    isLoadingHistory,
     sendMessage,
     clearMessages,
   };
