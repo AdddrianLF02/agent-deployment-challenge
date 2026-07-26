@@ -79,9 +79,9 @@ function cosineSimilarity(vecA, vecB) {
  * @param {number} [minSimilarity=0.60] 
  * @returns {Promise<Array>} List of similar messages.
  */
-export async function findSimilarMessages(userId, queryEmbedding, topK = 5, minSimilarity = 0.60) {
+export async function findSimilarMessages({ userId, embedding, limit = 5, minSimilarity = 0.60 }) {
   if (isDatabaseConnected()) {
-    const embeddingStr = `[${queryEmbedding.join(',')}]`;
+    const embeddingStr = `[${embedding.join(',')}]`;
     const text = `
       SELECT 
         m.id, 
@@ -97,7 +97,7 @@ export async function findSimilarMessages(userId, queryEmbedding, topK = 5, minS
       ORDER BY m.embedding <=> $1::vector ASC
       LIMIT $4
     `;
-    const { rows } = await query(text, [embeddingStr, userId, minSimilarity, topK]);
+    const { rows } = await query(text, [embeddingStr, userId, minSimilarity, limit]);
     return rows;
   } else {
     // Fallback: In-memory JS vector search
@@ -107,7 +107,7 @@ export async function findSimilarMessages(userId, queryEmbedding, topK = 5, minS
     const scoredMessages = [];
     for (const msg of memoryStore) {
       if (userConversationIds.has(msg.conversationId) && msg.embedding) {
-        const similarity = cosineSimilarity(queryEmbedding, msg.embedding);
+        const similarity = cosineSimilarity(embedding, msg.embedding);
         if (similarity >= minSimilarity) {
           scoredMessages.push({ ...msg, similarity });
         }
@@ -116,7 +116,7 @@ export async function findSimilarMessages(userId, queryEmbedding, topK = 5, minS
     
     return scoredMessages
       .sort((a, b) => b.similarity - a.similarity)
-      .slice(0, topK)
+      .slice(0, limit)
       .map(m => {
         const { embedding, ...rest } = m;
         return rest;
