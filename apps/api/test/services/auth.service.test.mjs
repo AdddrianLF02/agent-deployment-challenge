@@ -17,7 +17,7 @@ const mockConfig = {
 };
 
 test("validateCredentials correctly verifies user", async () => {
-  assert.equal(await validateCredentials("admin", "password", mockConfig), true);
+  assert.ok(await validateCredentials("admin", "password", mockConfig));
   assert.equal(await validateCredentials("admin", "wrong", mockConfig), false);
   assert.equal(await validateCredentials("wrong", "password", mockConfig), false);
 });

@@ -11,15 +11,18 @@ export async function validateCredentials(username, password, config) {
   const user = await findByUsername(username);
 
   if (user) {
-    return user.password_hash === hashPassword(password);
+    if (user.password_hash === hashPassword(password)) {
+      return user;
+    }
+    return false;
   }
 
   if (username === config.auth.adminUsername && password === config.auth.adminPassword) {
-    await createUser({
+    const newUser = await createUser({
       username,
       passwordHash: hashPassword(password)
     });
-    return true;
+    return newUser;
   }
 
   return false;

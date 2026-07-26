@@ -5,12 +5,12 @@ export function handleLogin(config) {
   return async function (req, res) {
     const { username, password } = req.body || {};
     
-    const isValid = await validateCredentials(username, password, config);
-    if (!isValid) {
+    const user = await validateCredentials(username, password, config);
+    if (!user) {
       return res.status(401).json({ error: "Invalid credentials" });
     }
 
-    const token = signToken({ sub: username }, config);
+    const token = signToken({ sub: user.id, username: user.username }, config);
     const serializedCookie = cookie.serialize("auth_token", token, {
       httpOnly: true,
       sameSite: "lax",
