@@ -19,7 +19,7 @@ test("sends a compatible request and returns the assistant content", async () =>
     );
   };
 
-  const content = await requestCompletion({
+  const { content } = await requestCompletion({
     fetchImpl,
     model: {
       apiKey: "test-key",

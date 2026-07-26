@@ -16,7 +16,7 @@ export async function processChatCompletion({ model, messages }) {
     return validation;
   }
 
-  const content = await modelClientModule.requestCompletion({
+  const { content } = await modelClientModule.requestCompletion({
     model,
     messages: validation.messages,
   });
