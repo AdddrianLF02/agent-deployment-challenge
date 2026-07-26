@@ -634,3 +634,17 @@ textarea:focus-visible {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* Markdown & Message Content Styles */
+.code-block-container { background: #282c34; border-radius: 4px; overflow: hidden; margin: 12px 0; border: 1px solid var(--ink); }
+.code-block-header { display: flex; align-items: center; justify-content: space-between; background: #21252b; padding: 6px 12px; border-bottom: 1px solid #181a1f; }
+.code-block-language { color: #abb2bf; font-family: "Cascadia Code", "Courier New", monospace; font-size: 11px; text-transform: uppercase; }
+.code-block-pre { margin: 0; padding: 12px; overflow-x: auto; font-family: "Cascadia Code", "Courier New", monospace; font-size: 13px; color: #abb2bf; }
+.code-inline { font-family: "Cascadia Code", "Courier New", monospace; background: rgba(0,0,0,0.06); padding: 2px 4px; border-radius: 3px; font-size: 0.9em; }
+
+.message-content { padding: 20px 22px; background: rgba(255, 255, 255, 0.48); font-size: 16px; line-height: 1.65; white-space: pre-wrap; overflow-wrap: anywhere; }
+.message--user .message-content { background: var(--signal); }
+.message-content p { margin: 0 0 12px 0; padding: 0; background: transparent; }
+.message-content p:last-child { margin-bottom: 0; }
+.user-text-content { background: transparent !important; padding: 0 !important; }
+
