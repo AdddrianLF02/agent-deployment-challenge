@@ -21,7 +21,9 @@ export function Message({ message, index }) {
         <strong>{actor}</strong>
       </header>
       {isUser ? (
-        <p className="user-text-content">{message.content}</p>
+        <div className="message-content">
+          <p>{message.content}</p>
+        </div>
       ) : (
         <div className="message-content">
           <ReactMarkdown

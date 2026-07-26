@@ -646,5 +646,5 @@ textarea:focus-visible {
 .message--user .message-content { background: var(--signal); }
 .message-content p { margin: 0 0 12px 0; padding: 0; background: transparent; }
 .message-content p:last-child { margin-bottom: 0; }
-.user-text-content { background: transparent !important; padding: 0 !important; }
+
 
