@@ -40,9 +40,6 @@ export function useAuth() {
     try {
       await fetchApi('/api/auth/login', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
         body: JSON.stringify({ username, password }),
       });
       // After successful login, get user details
