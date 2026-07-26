@@ -1,0 +1,8 @@
+{
+    "messaging_product": "whatsapp",
+    "to": "{{phone}}",
+    "type": "text",
+    "text": {
+        "body": "{{message}}"
+    }
+}

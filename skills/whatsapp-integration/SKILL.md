@@ -1,26 +1,47 @@
 ---
 name: whatsapp-integration
-description: TODO — Describe what this skill does and the situations in which the agent should use it to work with WhatsApp.
+description: Integrates the deployed agent with Meta WhatsApp Cloud API. Use when implementing, extending or debugging WhatsApp messaging, webhooks or Graph API communication. Do not use for Telegram, Discord, Slack or generic REST APIs.
 ---
 
 # WhatsApp Integration
 
-## Objetivo
+## Workflow
 
-<!-- Explica brevemente qué permite hacer esta skill. -->
+1. Receive the incoming webhook from Meta.
 
-## Requisitos y configuración
+2. Validate the webhook request.
 
-<!-- Indica las dependencias y la configuración necesarias. -->
+3. Resolve the internal user from the sender phone number.
 
-## Flujo de trabajo
+4. Invoke the Agent Orchestrator using the resolved identity.
 
-<!-- Describe cómo debe actuar el agente. -->
+5. Persist the conversation in the shared memory.
 
-## Verificación
+6. Build the outbound payload.
 
-<!-- Explica cómo comprobar que el resultado funciona. -->
+If the payload format is required, read:
 
-## Consideraciones y límites
+assets/outbound-message.json
 
-<!-- Documenta cualquier consideración relevante para utilizar la skill. -->
+7. Send the response through Meta Graph API.
+
+## References
+
+If the integration architecture is required:
+
+references/architecture.md
+
+If Graph API details are required:
+
+references/graph-api.md
+
+If platform limitations apply:
+
+references/limitations.md
+
+## Error Handling
+
+- Reject invalid webhook signatures.
+- Return HTTP 200 immediately and process asynchronously.
+- Retry transient Graph API failures.
+- Reject unknown users or require registration.
