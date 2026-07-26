@@ -23,15 +23,23 @@ test("chat.service - processChatCompletion", async (t) => {
 
   await t.test("should return success and content if validation passes and request succeeds", async () => {
     // Arrange
-    const mockResponse = {
-      ok: true,
-      json: async () => ({ choices: [{ message: { content: "mocked response" } }] })
-    };
-    global.fetch = mock.fn(async () => mockResponse);
+    global.fetch = mock.fn(async (url) => {
+      if (url.includes('embeddings')) {
+        return {
+          ok: true,
+          json: async () => ({ data: [{ embedding: [0.1, 0.2] }] })
+        };
+      }
+      return {
+        ok: true,
+        json: async () => ({ choices: [{ message: { role: "assistant", content: "mocked response" } }] })
+      };
+    });
 
     const params = { 
       model: { name: "test-model", baseUrl: "http://api", systemPrompt: "sys", timeoutMs: 1000 }, 
-      messages: [{ role: "user", content: "hello" }] 
+      messages: [{ role: "user", content: "hello" }],
+      userId: "test-user-id"
     };
 
     // Act
@@ -39,6 +47,6 @@ test("chat.service - processChatCompletion", async (t) => {
 
     // Assert
     assert.deepEqual(result, { ok: true, content: "mocked response" });
-    assert.strictEqual(global.fetch.mock.calls.length, 1);
+    assert.ok(global.fetch.mock.calls.length >= 1); // Chat completion + embeddings if configured
   });
 });

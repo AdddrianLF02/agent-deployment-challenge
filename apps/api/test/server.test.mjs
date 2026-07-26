@@ -19,11 +19,16 @@ function close(server) {
 
 test("connects the public chat route to the configured model endpoint", async () => {
   const modelServer = http.createServer((request, response) => {
-    assert.equal(request.url, "/v1/chat/completions");
-    response.writeHead(200, { "content-type": "application/json" });
-    response.end(JSON.stringify({
-      choices: [{ message: { content: "Integration works" } }],
-    }));
+    if (request.url === "/v1/embeddings") {
+      response.writeHead(200, { "content-type": "application/json" });
+      response.end(JSON.stringify({ data: [{ embedding: [0.1, 0.2] }] }));
+    } else {
+      assert.equal(request.url, "/v1/chat/completions");
+      response.writeHead(200, { "content-type": "application/json" });
+      response.end(JSON.stringify({
+        choices: [{ message: { content: "Integration works" } }],
+      }));
+    }
   });
   const modelAddress = await listen(modelServer);
 

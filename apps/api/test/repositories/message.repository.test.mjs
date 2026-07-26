@@ -52,7 +52,7 @@ test('Message Repository RAG Semantic Search and Tenant Isolation', async (t) =>
     });
 
     // Act
-    const results = await findSimilarMessages(userIdA, sharedVector, 5, 0.60);
+    const results = await findSimilarMessages({ userId: userIdA, embedding: sharedVector, limit: 5, minSimilarity: 0.60 });
 
     // Assert
     assert.strictEqual(results.length, 1, 'Should only return 1 message for User A');
@@ -88,7 +88,7 @@ test('Message Repository RAG Semantic Search and Tenant Isolation', async (t) =>
     });
 
     // Act
-    const results = await findSimilarMessages(userId, queryVector, 5, 0.60);
+    const results = await findSimilarMessages({ userId, embedding: queryVector, limit: 5, minSimilarity: 0.60 });
 
     // Assert
     assert.strictEqual(results.length, 1, 'Should only return messages above 0.60 similarity');
