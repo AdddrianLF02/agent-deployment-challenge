@@ -23,6 +23,7 @@ export function handleChat(config) {
       const result = await chatServiceModule.processChatCompletion({
         model: config.model,
         messages: request.body?.messages,
+        userId: request.user?.sub,
       });
 
       if (!result.ok) {
