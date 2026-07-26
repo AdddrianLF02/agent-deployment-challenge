@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert';
-import { _clearMemoryStore, createMessage, findSimilarMessages, findByConversationId } from '../../src/repositories/message.repository.mjs';
+import { _clearMemoryStore, createMessage, findSimilarMessages, findByConversationId, findMessagesByUserId } from '../../src/repositories/message.repository.mjs';
 import { createConversation } from '../../src/repositories/conversation.repository.mjs';
 
 test('Message Repository RAG Semantic Search and Tenant Isolation', async (t) => {
@@ -94,6 +94,33 @@ test('Message Repository RAG Semantic Search and Tenant Isolation', async (t) =>
     assert.strictEqual(results.length, 1, 'Should only return messages above 0.60 similarity');
     assert.strictEqual(results[0].content, 'Highly relevant');
     // Ensure no embedding is leaked in the RAG retrieval response
+    assert.strictEqual(results[0].embedding, undefined);
+  });
+  await t.test('findMessagesByUserId should return messages sorted by createdAt and limited', async () => {
+    // Arrange
+    const userId = 'history-user';
+    const conv = await createConversation({ userId, title: 'History Test' });
+    
+    await createMessage({
+      conversationId: conv.id,
+      role: 'user',
+      content: 'Msg 1',
+      embedding: Array(1536).fill(0.1)
+    });
+    
+    await createMessage({
+      conversationId: conv.id,
+      role: 'assistant',
+      content: 'Msg 2',
+      embedding: Array(1536).fill(0.1)
+    });
+
+    // Act
+    const results = await findMessagesByUserId({ userId, limit: 1 });
+
+    // Assert
+    assert.strictEqual(results.length, 1);
+    assert.strictEqual(results[0].content, 'Msg 1');
     assert.strictEqual(results[0].embedding, undefined);
   });
 });
