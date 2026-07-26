@@ -42,12 +42,18 @@ export default function App() {
   return (
     <main className="app-shell">
       <header className="topbar">
-        <h1>Agent Console {user?.sub ? `[${user.sub}]` : ""}</h1>
+        <div className="brand">
+          <span className="brand__mark" aria-hidden="true">A</span>
+          <div>
+            <p>Deployment challenge</p>
+            <h1>Agent Console {user?.sub ? `[${user.sub}]` : ""}</h1>
+          </div>
+        </div>
         <div className="topbar__actions">
           <ModelStatus health={health} />
           <button
             type="button"
-            className="btn-new-session"
+            className="reset-button"
             onClick={clearMessages}
             disabled={messages.length === 0 || sending}
           >
@@ -55,9 +61,9 @@ export default function App() {
           </button>
           <button
             type="button"
-            className="btn-new-session"
+            className="reset-button reset-button--danger"
             onClick={logout}
-            style={{ marginLeft: "8px", borderColor: "var(--alert)", color: "var(--alert)" }}
+            style={{ borderColor: "var(--alert)", color: "var(--alert)" }}
           >
             Desconectar
           </button>
@@ -65,27 +71,60 @@ export default function App() {
       </header>
 
       <div className="workspace">
-        {messages.length === 0 ? (
-          <EmptyState />
-        ) : (
-          <section className="chat-history" aria-label="Historial de mensajes">
-            <div className="chat-history__list" ref={listRef}>
-              {messages.map((message, index) => (
-                <Message key={index} message={message} index={index} />
-              ))}
+        <aside className="context-panel">
+          <span className="eyebrow">Entorno / 01</span>
+          <h2>Una superficie mínima para una decisión completa.</h2>
+          <p>
+            Infraestructura, modelo y operación quedan en tus manos. Este panel
+            solo confirma que todas las piezas se encuentran.
+          </p>
+          <dl>
+            <div>
+              <dt>Interfaz</dt>
+              <dd>Activa</dd>
             </div>
-          </section>
-        )}
-      </div>
+            <div>
+              <dt>API</dt>
+              <dd>{health.state === "offline" ? "No disponible" : "Detectada"}</dd>
+            </div>
+            <div>
+              <dt>Usuario</dt>
+              <dd>{user?.sub || "Anon"}</dd>
+            </div>
+          </dl>
+        </aside>
 
-      <Composer 
-        draft={draft} 
-        setDraft={setDraft} 
-        sending={sending} 
-        submitOnEnter={submitOnEnter} 
-        sendMessage={sendMessage} 
-        error={error} 
-      />
+        <section className="chat-panel" aria-label="Conversación con el agente">
+          <div className="chat-log" aria-live="polite">
+            {messages.length === 0 ? (
+              <EmptyState />
+            ) : (
+              <div className="chat-history__list" ref={listRef}>
+                {messages.map((message, index) => (
+                  <Message key={index} message={message} index={index} />
+                ))}
+              </div>
+            )}
+            {sending ? (
+              <div className="thinking" role="status">
+                <span />
+                <span />
+                <span />
+                El agente está procesando
+              </div>
+            ) : null}
+          </div>
+
+          <Composer 
+            draft={draft} 
+            setDraft={setDraft} 
+            sending={sending} 
+            submitOnEnter={submitOnEnter} 
+            sendMessage={sendMessage} 
+            error={error} 
+          />
+        </section>
+      </div>
     </main>
   );
 }
