@@ -21,6 +21,8 @@ services:
     container_name: agent_platform_api
     ports:
       - "4319:4319"
+    env_file:
+      - .env
     environment:
       PORT: 4319
       HOST: "0.0.0.0"
