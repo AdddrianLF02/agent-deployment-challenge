@@ -83,7 +83,7 @@ textarea:focus-visible {
 
 .reset-button--danger:hover:not(:disabled) {
   background: var(--alert);
-  color: var(--paper);
+  color: #ffffff !important;
   border-color: var(--alert);
 }
 
