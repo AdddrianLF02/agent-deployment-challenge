@@ -1,0 +1,38 @@
+services:
+  db:
+    image: pgvector/pgvector:pg16
+    container_name: agent_platform_db
+    environment:
+      POSTGRES_DB: agent_platform
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d agent_platform"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build: .
+    container_name: agent_platform_api
+    ports:
+      - "4319:4319"
+    environment:
+      PORT: 4319
+      HOST: "0.0.0.0"
+      PGHOST: db
+      PGPORT: 5432
+      PGDATABASE: agent_platform
+      PGUSER: postgres
+      PGPASSWORD: postgres
+      JWT_SECRET: production_jwt_secret_key_change_me
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  pgdata:
