@@ -66,3 +66,14 @@ export async function processChatCompletion({ model, messages, userId }) {
 
   return { ok: true, content: assistantResponse.content };
 }
+
+/**
+ * Retrieves the chat history for a given user.
+ * @param {Object} params
+ * @param {string} params.userId
+ * @returns {Promise<Object>} Object containing the list of messages.
+ */
+export async function getChatHistory({ userId }) {
+  const messages = await messageRepository.findMessagesByUserId({ userId });
+  return { ok: true, messages };
+}

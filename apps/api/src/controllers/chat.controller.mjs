@@ -43,3 +43,30 @@ export function handleChat(config) {
     }
   };
 }
+
+/**
+ * Controlador para la ruta de historial de chat.
+ * 
+ * @param {Object} config - Configuración de la aplicación.
+ * @returns {Function} Express route handler.
+ */
+export function handleGetHistory(config) {
+  return async (request, response) => {
+    const requestId = crypto.randomUUID();
+
+    try {
+      const result = await chatServiceModule.getChatHistory({
+        userId: request.user?.sub,
+      });
+
+      if (!result.ok) {
+        return response.status(400).json({ error: result.error, requestId });
+      }
+
+      return response.json({ messages: result.messages, requestId });
+    } catch (error) {
+      console.error(`[${requestId}] chat history request failed: ${error?.message ?? "unknown error"}`);
+      return response.status(500).json({ error: "An unexpected error occurred", requestId });
+    }
+  };
+}

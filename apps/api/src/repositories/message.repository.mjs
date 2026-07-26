@@ -124,6 +124,43 @@ export async function findSimilarMessages({ userId, embedding, limit = 5, minSim
   }
 }
 
+/**
+ * Finds recent messages for a user across all their conversations.
+ * @param {Object} params
+ * @param {string} params.userId
+ * @param {number} [params.limit=100]
+ * @returns {Promise<Array>} List of messages without embeddings.
+ */
+export async function findMessagesByUserId({ userId, limit = 100 }) {
+  if (isDatabaseConnected()) {
+    const text = `
+      SELECT m.role, m.content, m.created_at as "createdAt"
+      FROM messages m
+      JOIN conversations c ON m.conversation_id = c.id
+      WHERE c.user_id = $1
+      ORDER BY m.created_at ASC
+      LIMIT $2
+    `;
+    const { rows } = await query(text, [userId, limit]);
+    return rows;
+  } else {
+    const userConversations = await findByUserId(userId);
+    const userConversationIds = new Set(userConversations.map(c => c.id));
+    
+    return memoryStore
+      .filter(m => userConversationIds.has(m.conversationId))
+      .sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt))
+      .slice(0, limit)
+      .map(m => {
+        return {
+          role: m.role,
+          content: m.content,
+          createdAt: m.createdAt
+        };
+      });
+  }
+}
+
 export function _clearMemoryStore() {
   memoryStore = [];
 }
