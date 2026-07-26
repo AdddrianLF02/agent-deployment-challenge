@@ -7,6 +7,7 @@ import { securityMiddleware } from "./middlewares/security.middleware.mjs";
 import { registerStaticMiddleware } from "./middlewares/static.middleware.mjs";
 import { errorHandlerMiddleware, notFoundHandlerMiddleware } from "./middlewares/error.middleware.mjs";
 import { createApiRouter } from "./routes/index.mjs";
+import { getPool } from "./repositories/db.mjs";
 import { runMigrations } from "./repositories/migrations.mjs";
 
 export function createApp(config = loadConfig()) {
@@ -30,6 +31,7 @@ export function createApp(config = loadConfig()) {
 
 export async function startServer(config = loadConfig()) {
   try {
+    await getPool(config);
     await runMigrations(config);
   } catch (error) {
     console.error("Failed to run database migrations during startup:", error);
